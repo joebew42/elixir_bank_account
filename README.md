@@ -14,6 +14,12 @@ We are supposed to write a simple program that allows us to manage bank accounts
   * deposit money
   * withdrawal money
 
+## Get dependencies
+
+```
+mix deps.get
+```
+
 ## How to run tests
 
 ```

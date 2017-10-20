@@ -1,3 +1,8 @@
+Remember this:
+
+* introduce the use of [typespecs and behaviours](https://elixir-lang.org/getting-started/typespecs-and-behaviours.html)
+* run a webserver at the application startup
+
 # DOING
 
 * expose the `create_account` through an HTTP API
