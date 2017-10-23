@@ -4,6 +4,13 @@ defmodule Http.Router do
   plug :match
   plug :dispatch
 
+  get "/accounts/:account_name" do
+    case Bank.Admin.check_balance(account_name) do
+      {:ok, balance} -> send_resp(conn, 200, Poison.encode!(%{"balance" => balance}))
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+    end
+  end
+
   post "/accounts/:account_name" do
     case Bank.Admin.create_account(account_name) do
       {:ok, :account_created} -> send_resp(conn, 201, "/accounts/" <> account_name)

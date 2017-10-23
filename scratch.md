@@ -6,8 +6,6 @@ Remember this:
 
 # DOING
 
-* expose the `check_balance` through an HTTP API
-
 # TODO
 
 * expose the `deposit` through an HTTP API
@@ -17,5 +15,6 @@ Remember this:
 
 # DONE
 
+* expose the `check_balance` through an HTTP API
 * expose the `delete_account` through an HTTP API
 * expose the `create_account` through an HTTP API

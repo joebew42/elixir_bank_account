@@ -47,6 +47,30 @@ defmodule Http.RouterTest do
     end
   end
 
+  test "returns 200 and the current balance" do
+    with_mock Bank.Admin, [check_balance: fn("joe") -> {:ok, 900} end] do
+      conn = do_get("/accounts/joe")
+
+      assert :sent == conn.state
+      assert 200 == conn.status
+      assert "{\"balance\":900}" == conn.resp_body
+    end
+  end
+
+  test "returns 404 when try to get the current balance of an unexisting account" do
+    with_mock Bank.Admin, [check_balance: fn("joe") -> {:error, :account_not_exists} end] do
+      conn = do_get("/accounts/joe")
+
+      assert :sent == conn.state
+      assert 404 == conn.status
+      assert "" == conn.resp_body
+    end
+  end
+
+  defp do_get(endpoint) do
+    do_request(:get, endpoint)
+  end
+
   defp do_post(endpoint, payload \\ "") do
     do_request(:post, endpoint, payload)
   end
