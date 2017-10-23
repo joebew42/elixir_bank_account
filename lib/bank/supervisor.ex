@@ -9,7 +9,8 @@ defmodule Bank.Supervisor do
     children = [
       Bank.Admin,
       Bank.AccountSupervisor,
-      Bank.AccountRegistry
+      Bank.AccountRegistry,
+      Plug.Adapters.Cowboy.child_spec(:http, Http.Router, [], [port: 4000])
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

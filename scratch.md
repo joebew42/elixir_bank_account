@@ -2,10 +2,9 @@ Remember this:
 
 * introduce the use of [typespecs and behaviours](https://elixir-lang.org/getting-started/typespecs-and-behaviours.html)
 * run a webserver at the application startup
+* introduce a `Bank.Admin.Mock` moudule
 
 # DOING
-
-* expose the `create_account` through an HTTP API
 
 # TODO
 
@@ -17,3 +16,5 @@ Remember this:
 * introduce somekind of authorization mechanism
 
 # DONE
+
+* expose the `create_account` through an HTTP API

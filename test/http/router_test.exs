@@ -18,6 +18,17 @@ defmodule Http.RouterTest do
     end
   end
 
+  test "returns 200 when we try to create an account that is already exists" do
+    with_mock Bank.Admin, [create_account: fn("joe") -> {:error, :account_already_exists} end] do
+      payload = Poison.encode!(%{name: "joe"})
+      conn = do_request(:post, "/accounts", payload)
+
+      assert :sent == conn.state
+      assert 200 == conn.status
+      assert "/accounts/joe" == conn.resp_body
+    end
+  end
+
   defp do_request(verb, endpoint, payload) do
     conn(verb, endpoint, payload)
     |> @router.call(@opts)
