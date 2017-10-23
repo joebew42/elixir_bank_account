@@ -9,8 +9,7 @@ defmodule Http.RouterTest do
 
   test "returns 201 when a new account is created" do
     with_mock Bank.Admin, [create_account: fn("joe") -> {:ok, :account_created} end] do
-      payload = Poison.encode!(%{name: "joe"})
-      conn = do_post("/accounts", payload)
+      conn = do_post("/accounts/joe")
 
       assert :sent == conn.state
       assert 201 == conn.status
@@ -20,8 +19,7 @@ defmodule Http.RouterTest do
 
   test "returns 200 when try to create an account that is already exists" do
     with_mock Bank.Admin, [create_account: fn("joe") -> {:error, :account_already_exists} end] do
-      payload = Poison.encode!(%{name: "joe"})
-      conn = do_post("/accounts", payload)
+      conn = do_post("/accounts/joe")
 
       assert :sent == conn.state
       assert 200 == conn.status
@@ -49,7 +47,7 @@ defmodule Http.RouterTest do
     end
   end
 
-  defp do_post(endpoint, payload) do
+  defp do_post(endpoint, payload \\ "") do
     do_request(:post, endpoint, payload)
   end
 
