@@ -8,7 +8,6 @@ Remember this:
 
 # TODO
 
-* expose the `delete_account` through an HTTP API
 * expose the `check_balance` through an HTTP API
 * expose the `deposit` through an HTTP API
 * expose the `withdraw` through an HTTP API
@@ -17,4 +16,5 @@ Remember this:
 
 # DONE
 
+* expose the `delete_account` through an HTTP API
 * expose the `create_account` through an HTTP API

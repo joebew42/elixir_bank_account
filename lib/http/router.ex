@@ -14,4 +14,11 @@ defmodule Http.Router do
     end
   end
 
+  delete "/accounts/:account_name" do
+    case Bank.Admin.delete_account(account_name) do
+      {:ok, :account_deleted} -> send_resp(conn, 204, "")
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+    end
+  end
+
 end
