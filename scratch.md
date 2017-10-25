@@ -8,7 +8,6 @@ Remember this:
 
 # TODO
 
-* `Bank.Admin.deposit` should handle non numeric values for amount
 * expose the `withdraw` through an HTTP API
 * use [Mox](https://hexdocs.pm/mox/Mox.html) instead of Mock
 * use float instead of integer for amount
@@ -18,6 +17,8 @@ Remember this:
 
 # DONE
 
+* `Bank.Admin.deposit` should handle non numeric values for amount (won't fix)
+   is a responsability of the router to parse and validate the parameters
 * expose the `deposit` through an HTTP API
 * expose the `check_balance` through an HTTP API
 * expose the `delete_account` through an HTTP API

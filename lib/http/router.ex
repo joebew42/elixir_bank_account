@@ -30,17 +30,17 @@ defmodule Http.Router do
     end
   end
 
-  defp deposit(amount, account_name) do
-    case Integer.parse(amount) do
-      {numeric_value, _} -> Bank.Admin.deposit(numeric_value, account_name)
-      _ -> {:error, :bad_amount_value}
-    end
-  end
-
   delete "/accounts/:account_name" do
     case Bank.Admin.delete_account(account_name) do
       {:ok, :account_deleted} -> send_resp(conn, 204, "")
       {:error, :account_not_exists} -> send_resp(conn, 404, "")
+    end
+  end
+
+  defp deposit(amount, account_name) do
+    case Integer.parse(amount) do
+      {numeric_value, _} -> Bank.Admin.deposit(numeric_value, account_name)
+      _ -> {:error, :bad_amount_value}
     end
   end
 
