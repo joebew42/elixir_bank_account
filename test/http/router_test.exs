@@ -67,12 +67,52 @@ defmodule Http.RouterTest do
     end
   end
 
+  test "returns 204 when deposit amount" do
+    with_mock Bank.Admin, [deposit: fn(100, "joe") -> {:ok} end] do
+      conn = do_put("/accounts/joe/deposit/100")
+
+      assert :sent == conn.state
+      assert 204 == conn.status
+      assert "" == conn.resp_body
+    end
+  end
+
+  test "returns 400 when try to deposit with no amount" do
+    conn = do_put("/accounts/joe/deposit/")
+
+    assert :sent == conn.state
+    assert 400 == conn.status
+    assert "you have to specify an amount" == conn.resp_body
+  end
+
+  test "returns 400 when try to deposit a non numeric value for amount" do
+    conn = do_put("/accounts/joe/deposit/an-amount")
+
+    assert :sent == conn.state
+    assert 400 == conn.status
+    assert "you have to specify a numeric amount" == conn.resp_body
+  end
+
+  test "returns 404 when try to deposit to a non existing account" do
+    with_mock Bank.Admin, [deposit: fn(100, "joe") -> {:error, :account_not_exists} end] do
+      conn = do_put("/accounts/joe/deposit/100")
+
+      assert :sent == conn.state
+      assert 404 == conn.status
+      assert "" == conn.resp_body
+    end
+  end
+
   defp do_get(endpoint) do
     do_request(:get, endpoint)
   end
 
   defp do_post(endpoint, payload \\ "") do
     do_request(:post, endpoint, payload)
+  end
+
+  defp do_put(endpoint, payload \\ "") do
+    do_request(:put, endpoint, payload)
   end
 
   defp do_delete(endpoint) do
