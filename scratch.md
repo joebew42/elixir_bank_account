@@ -12,9 +12,10 @@ Remember this:
 
 * expose the `withdraw` through an HTTP API
 * use float instead of integer for amount
-* as an Admin I can transfer money from an existing account to another
-* introduce somekind of authorization mechanism
-* as a customer I can create more than one bank account
+* introduce somekind of authorization mechanism to use the HTTP API
+
+* as an `admin` I can transfer money from an existing account to another
+* as a `customer` I can create more than one bank account
 
 # DONE
 
