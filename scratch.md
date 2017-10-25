@@ -6,10 +6,11 @@ Remember this:
 
 # DOING
 
+* use [`Mox`](https://hexdocs.pm/mox/Mox.html) instead of [`Mock`](https://github.com/jjh42/mock)
+
 # TODO
 
 * expose the `withdraw` through an HTTP API
-* use [Mox](https://hexdocs.pm/mox/Mox.html) instead of Mock
 * use float instead of integer for amount
 * as an Admin I can transfer money from an existing account to another
 * introduce somekind of authorization mechanism
