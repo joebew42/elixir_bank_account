@@ -1,4 +1,6 @@
 defmodule Bank.Admin do
+  @behaviour Bank.AccountsAdministrator
+
   use GenServer
 
   def create_account(account) do

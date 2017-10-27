@@ -2,79 +2,91 @@ defmodule Http.RouterTest do
   use ExUnit.Case, async: true
   use Plug.Test
 
-  import Mock
+  import Mox
 
   @router Http.Router
   @opts @router.init([])
 
-  test "returns 201 when a new account is created" do
-    with_mock Bank.Admin, [create_account: fn("joe") -> {:ok, :account_created} end] do
-      conn = do_post("/accounts/joe")
+  setup do
+    start_supervised Mox.Server
+    %{}
+  end
 
-      assert :sent == conn.state
-      assert 201 == conn.status
-      assert "/accounts/joe" == conn.resp_body
-    end
+  test "returns 201 when a new account is created" do
+    Bank.AdminMock
+    |> expect(:create_account, fn("joe") -> {:ok, :account_created} end)
+
+    conn = do_post("/accounts/joe")
+
+    assert :sent == conn.state
+    assert 201 == conn.status
+    assert "/accounts/joe" == conn.resp_body
   end
 
   test "returns 200 when try to create an account that is already exists" do
-    with_mock Bank.Admin, [create_account: fn("joe") -> {:error, :account_already_exists} end] do
-      conn = do_post("/accounts/joe")
+    Bank.AdminMock
+    |> expect(:create_account, fn("joe") -> {:error, :account_already_exists} end)
 
-      assert :sent == conn.state
-      assert 200 == conn.status
-      assert "/accounts/joe" == conn.resp_body
-    end
+    conn = do_post("/accounts/joe")
+
+    assert :sent == conn.state
+    assert 200 == conn.status
+    assert "/accounts/joe" == conn.resp_body
   end
 
   test "returns 204 when an account is deleted" do
-    with_mock Bank.Admin, [delete_account: fn("joe") -> {:ok, :account_deleted} end] do
-      conn = do_delete("/accounts/joe")
+    Bank.AdminMock
+    |> expect(:delete_account, fn("joe") -> {:ok, :account_deleted} end)
 
-      assert :sent == conn.state
-      assert 204 == conn.status
-      assert "" == conn.resp_body
-    end
+    conn = do_delete("/accounts/joe")
+
+    assert :sent == conn.state
+    assert 204 == conn.status
+    assert "" == conn.resp_body
   end
 
   test "returns 404 when try to delete an unexisting account" do
-    with_mock Bank.Admin, [delete_account: fn("joe") -> {:error, :account_not_exists} end] do
-      conn = do_delete("/accounts/joe")
+    Bank.AdminMock
+    |> expect(:delete_account, fn("joe") -> {:error, :account_not_exists} end)
 
-      assert :sent == conn.state
-      assert 404 == conn.status
-      assert "" == conn.resp_body
-    end
+    conn = do_delete("/accounts/joe")
+
+    assert :sent == conn.state
+    assert 404 == conn.status
+    assert "" == conn.resp_body
   end
 
   test "returns 200 and the current balance" do
-    with_mock Bank.Admin, [check_balance: fn("joe") -> {:ok, 900} end] do
-      conn = do_get("/accounts/joe")
+    Bank.AdminMock
+    |> expect(:check_balance, fn("joe") -> {:ok, 900} end)
 
-      assert :sent == conn.state
-      assert 200 == conn.status
-      assert "{\"balance\":900}" == conn.resp_body
-    end
+    conn = do_get("/accounts/joe")
+
+    assert :sent == conn.state
+    assert 200 == conn.status
+    assert "{\"balance\":900}" == conn.resp_body
   end
 
   test "returns 404 when try to get the current balance of an unexisting account" do
-    with_mock Bank.Admin, [check_balance: fn("joe") -> {:error, :account_not_exists} end] do
-      conn = do_get("/accounts/joe")
+    Bank.AdminMock
+    |> expect(:check_balance, fn("joe") -> {:error, :account_not_exists} end)
 
-      assert :sent == conn.state
-      assert 404 == conn.status
-      assert "" == conn.resp_body
-    end
+    conn = do_get("/accounts/joe")
+
+    assert :sent == conn.state
+    assert 404 == conn.status
+    assert "" == conn.resp_body
   end
 
   test "returns 204 when deposit amount" do
-    with_mock Bank.Admin, [deposit: fn(100, "joe") -> {:ok} end] do
-      conn = do_put("/accounts/joe/deposit/100")
+    Bank.AdminMock
+    |> expect(:deposit, fn(100, "joe") -> {:ok} end)
 
-      assert :sent == conn.state
-      assert 204 == conn.status
-      assert "" == conn.resp_body
-    end
+    conn = do_put("/accounts/joe/deposit/100")
+
+    assert :sent == conn.state
+    assert 204 == conn.status
+    assert "" == conn.resp_body
   end
 
   test "returns 400 when try to deposit with no amount" do
@@ -94,13 +106,14 @@ defmodule Http.RouterTest do
   end
 
   test "returns 404 when try to deposit to a non existing account" do
-    with_mock Bank.Admin, [deposit: fn(100, "joe") -> {:error, :account_not_exists} end] do
-      conn = do_put("/accounts/joe/deposit/100")
+    Bank.AdminMock
+    |> expect(:deposit, fn(100, "joe") -> {:error, :account_not_exists} end)
 
-      assert :sent == conn.state
-      assert 404 == conn.status
-      assert "" == conn.resp_body
-    end
+    conn = do_put("/accounts/joe/deposit/100")
+
+    assert :sent == conn.state
+    assert 404 == conn.status
+    assert "" == conn.resp_body
   end
 
   defp do_get(endpoint) do

@@ -1,18 +1,20 @@
 defmodule Http.Router do
   use Plug.Router
 
+  @accounts_administrator Application.get_env(:bank, :accounts_administrator)
+
   plug :match
   plug :dispatch
 
   get "/accounts/:account_name" do
-    case Bank.Admin.check_balance(account_name) do
+    case @accounts_administrator.check_balance(account_name) do
       {:ok, balance} -> send_resp(conn, 200, Poison.encode!(%{"balance" => balance}))
       {:error, :account_not_exists} -> send_resp(conn, 404, "")
     end
   end
 
   post "/accounts/:account_name" do
-    case Bank.Admin.create_account(account_name) do
+    case @accounts_administrator.create_account(account_name) do
       {:ok, :account_created} -> send_resp(conn, 201, "/accounts/" <> account_name)
       {:error, :account_already_exists} -> send_resp(conn, 200, "/accounts/" <> account_name)
     end
@@ -31,7 +33,7 @@ defmodule Http.Router do
   end
 
   delete "/accounts/:account_name" do
-    case Bank.Admin.delete_account(account_name) do
+    case @accounts_administrator.delete_account(account_name) do
       {:ok, :account_deleted} -> send_resp(conn, 204, "")
       {:error, :account_not_exists} -> send_resp(conn, 404, "")
     end
@@ -39,7 +41,7 @@ defmodule Http.Router do
 
   defp deposit(amount, account_name) do
     case Integer.parse(amount) do
-      {numeric_value, _} -> Bank.Admin.deposit(numeric_value, account_name)
+      {numeric_value, _} -> @accounts_administrator.deposit(numeric_value, account_name)
       _ -> {:error, :bad_amount_value}
     end
   end

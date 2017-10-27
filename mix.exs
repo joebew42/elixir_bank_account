@@ -10,6 +10,7 @@ defmodule Bank.Mixfile do
       aliases: [
         test: "test --no-start"
       ],
+      elixirc_paths: elixirc_paths(Mix.env),
       deps: deps()
     ]
   end
@@ -21,12 +22,15 @@ defmodule Bank.Mixfile do
     ]
   end
 
+  defp elixirc_paths(:test), do: ["test/support", "lib"]
+  defp elixirc_paths(_),     do: ["lib"]
+
   defp deps do
     [
       {:cowboy, "~> 1.0.0"},
       {:plug, "~> 1.0"},
       {:poison, "~> 3.1"},
-      {:mock, "~> 0.2.0", only: :test}
+      {:mox, "~> 0.2.0", only: :test}
     ]
   end
 end
