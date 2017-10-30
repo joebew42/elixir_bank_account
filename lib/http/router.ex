@@ -32,6 +32,19 @@ defmodule Http.Router do
     end
   end
 
+  put "/accounts/:account_name/withdraw" do
+    send_resp(conn, 400, "you have to specify an amount")
+  end
+
+  put "/accounts/:account_name/withdraw/:amount" do
+    case withdraw(amount, account_name) do
+      {:ok} -> send_resp(conn, 204, "")
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+      {:error, :withdrawal_not_permitted} -> send_resp(conn, 403, "the amount you specified is greater than your current balance")
+      {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
+    end
+  end
+
   delete "/accounts/:account_name" do
     case @accounts_administrator.delete_account(account_name) do
       {:ok, :account_deleted} -> send_resp(conn, 204, "")
@@ -42,6 +55,13 @@ defmodule Http.Router do
   defp deposit(amount, account_name) do
     case Integer.parse(amount) do
       {numeric_value, _} -> @accounts_administrator.deposit(numeric_value, account_name)
+      _ -> {:error, :bad_amount_value}
+    end
+  end
+
+  defp withdraw(amount, account_name) do
+    case Integer.parse(amount) do
+      {numeric_value, _} -> @accounts_administrator.withdraw(numeric_value, account_name)
       _ -> {:error, :bad_amount_value}
     end
   end

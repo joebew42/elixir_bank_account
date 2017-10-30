@@ -7,7 +7,7 @@ defmodule Http.RouterTest do
   @router Http.Router
   @opts @router.init([])
 
-  setup do
+  setup_all do
     start_supervised Mox.Server
     %{}
   end
@@ -114,6 +114,61 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 404 == conn.status
     assert "" == conn.resp_body
+  end
+
+  test "returns 204 when withdraw amount" do
+    Bank.AdminMock
+    |> expect(:withdraw, fn(100, "joe") -> {:ok} end)
+
+    conn = do_put("/accounts/joe/withdraw/100")
+
+    assert :sent == conn.state
+    assert 204 == conn.status
+    assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
+  end
+
+  test "returns 400 when try to withdraw with no amount" do
+    conn = do_put("/accounts/joe/withdraw/")
+
+    assert :sent == conn.state
+    assert 400 == conn.status
+    assert "you have to specify an amount" == conn.resp_body
+  end
+
+  test "returns 400 when try to withdraw a non numeric value for amount" do
+    conn = do_put("/accounts/joe/withdraw/an-amount")
+
+    assert :sent == conn.state
+    assert 400 == conn.status
+    assert "you have to specify a numeric amount" == conn.resp_body
+  end
+
+  test "returns 403 when try to withdraw an amount greater than the current balance" do
+    Bank.AdminMock
+    |> expect(:withdraw, fn(100, "joe") -> {:error, :withdrawal_not_permitted} end)
+
+    conn = do_put("/accounts/joe/withdraw/100")
+
+    assert :sent == conn.state
+    assert 403 == conn.status
+    assert "the amount you specified is greater than your current balance" == conn.resp_body
+
+    verify! Bank.AdminMock
+  end
+
+  test "returns 404 when try to withdraw from a non existing account" do
+    Bank.AdminMock
+    |> expect(:withdraw, fn(100, "joe") -> {:error, :account_not_exists} end)
+
+    conn = do_put("/accounts/joe/withdraw/100")
+
+    assert :sent == conn.state
+    assert 404 == conn.status
+    assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   defp do_get(endpoint) do
