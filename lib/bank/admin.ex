@@ -86,9 +86,7 @@ defmodule Bank.Admin do
   defp _deposit(amount, account) do
     case Bank.AccountRegistry.whereis_name(account) do
       :undefined -> {:error, :account_not_exists}
-      bank_account_pid ->
-        Bank.Account.deposit(bank_account_pid, amount)
-        {:ok}
+      bank_account_pid -> Bank.Account.deposit(bank_account_pid, amount)
     end
   end
 

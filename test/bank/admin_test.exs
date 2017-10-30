@@ -77,9 +77,9 @@ defmodule Bank.AdminTest do
     end
 
     test "we are able to deposit positive amounts" do
-      Bank.Admin.deposit(50, "existing_account")
-      Bank.Admin.deposit(100, "existing_account")
-      Bank.Admin.deposit(200, "existing_account")
+      {:ok} = Bank.Admin.deposit(50, "existing_account")
+      {:ok} = Bank.Admin.deposit(100, "existing_account")
+      {:ok} = Bank.Admin.deposit(200, "existing_account")
       response = Bank.Admin.check_balance("existing_account")
 
       assert {:ok, 1000 + 50 + 100 + 200} == response
@@ -105,7 +105,7 @@ defmodule Bank.AdminTest do
     end
 
     test "we are able to withdraw if the amount is lower or equal than current balance" do
-      Bank.Admin.withdraw(1000, "existing_account")
+      {:ok} = Bank.Admin.withdraw(1000, "existing_account")
       response = Bank.Admin.check_balance("existing_account")
 
       assert {:ok, 0} == response

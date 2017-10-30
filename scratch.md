@@ -6,7 +6,6 @@ Remember this:
 
 # TODO
 
-* `Bank.Admin.deposit` and `Bank.Admin.withdraw` behaves differently (asimmetry)
 * expose the `withdraw` through an HTTP API
 * introduce somekind of authorization mechanism to use the HTTP API
 * as an `admin` I can transfer money from an existing account to another
@@ -18,6 +17,7 @@ Remember this:
 
 # DONE
 
+* `Bank.Admin.deposit` and `Bank.Admin.withdraw` behaves differently (asimmetry)
 * use [`Mox`](https://hexdocs.pm/mox/Mox.html) instead of [`Mock`](https://github.com/jjh42/mock)
 * run a webserver at the application startup
 * `Bank.Admin.deposit` should handle non numeric values for amount (won't fix)

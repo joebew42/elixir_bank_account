@@ -36,17 +36,17 @@ defmodule Bank.Account do
   end
 
   defp _deposit(amount, balance) when amount > 0 do
-    {:ok, balance + amount}
+    {{:ok}, balance + amount}
   end
 
   defp _deposit(_amount, balance) do
-    {:ok, balance}
+    {{:ok}, balance}
   end
 
   defp _withdraw(amount, balance) when amount >= 0 do
     new_balance = balance - amount
     case new_balance >= 0 do
-      true -> {:ok, new_balance}
+      true -> {{:ok}, new_balance}
       false -> {{:error, :withdrawal_not_permitted}, balance}
     end
   end
