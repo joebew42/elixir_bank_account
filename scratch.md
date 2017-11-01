@@ -6,7 +6,6 @@ Remember this:
 
 # TODO
 
-* do not use the pipe operator for `Bank.AdminMock` in the tests
 * introduce somekind of authorization mechanism to use the HTTP API
 * as an `admin` I can transfer money from an existing account to another
 
@@ -17,6 +16,7 @@ Remember this:
 
 # DONE
 
+* do not use the pipe operator for `Bank.AdminMock` in the tests
 * add the `verify!` to all the tests that use the `Bank.AdminMock`
 * expose the `withdraw` through an HTTP API
 * `Bank.Admin.deposit` and `Bank.Admin.withdraw` behaves differently (asimmetry)

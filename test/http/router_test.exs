@@ -13,8 +13,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 201 when a new account is created" do
-    Bank.AdminMock
-    |> expect(:create_account, fn("joe") -> {:ok, :account_created} end)
+    expect(Bank.AdminMock, :create_account, fn("joe") -> {:ok, :account_created} end)
 
     conn = do_post("/accounts/joe")
 
@@ -26,8 +25,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 200 when try to create an account that is already exists" do
-    Bank.AdminMock
-    |> expect(:create_account, fn("joe") -> {:error, :account_already_exists} end)
+    expect(Bank.AdminMock, :create_account, fn("joe") -> {:error, :account_already_exists} end)
 
     conn = do_post("/accounts/joe")
 
@@ -39,8 +37,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 204 when an account is deleted" do
-    Bank.AdminMock
-    |> expect(:delete_account, fn("joe") -> {:ok, :account_deleted} end)
+    expect(Bank.AdminMock, :delete_account, fn("joe") -> {:ok, :account_deleted} end)
 
     conn = do_delete("/accounts/joe")
 
@@ -52,8 +49,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 404 when try to delete an unexisting account" do
-    Bank.AdminMock
-    |> expect(:delete_account, fn("joe") -> {:error, :account_not_exists} end)
+    expect(Bank.AdminMock, :delete_account, fn("joe") -> {:error, :account_not_exists} end)
 
     conn = do_delete("/accounts/joe")
 
@@ -65,8 +61,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 200 and the current balance" do
-    Bank.AdminMock
-    |> expect(:check_balance, fn("joe") -> {:ok, 900} end)
+    expect(Bank.AdminMock, :check_balance, fn("joe") -> {:ok, 900} end)
 
     conn = do_get("/accounts/joe")
 
@@ -78,8 +73,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 404 when try to get the current balance of an unexisting account" do
-    Bank.AdminMock
-    |> expect(:check_balance, fn("joe") -> {:error, :account_not_exists} end)
+    expect(Bank.AdminMock, :check_balance, fn("joe") -> {:error, :account_not_exists} end)
 
     conn = do_get("/accounts/joe")
 
@@ -91,8 +85,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 204 when deposit amount" do
-    Bank.AdminMock
-    |> expect(:deposit, fn(100, "joe") -> {:ok} end)
+    expect(Bank.AdminMock, :deposit, fn(100, "joe") -> {:ok} end)
 
     conn = do_put("/accounts/joe/deposit/100")
 
@@ -120,8 +113,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 404 when try to deposit to a non existing account" do
-    Bank.AdminMock
-    |> expect(:deposit, fn(100, "joe") -> {:error, :account_not_exists} end)
+    expect(Bank.AdminMock, :deposit, fn(100, "joe") -> {:error, :account_not_exists} end)
 
     conn = do_put("/accounts/joe/deposit/100")
 
@@ -133,8 +125,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 204 when withdraw amount" do
-    Bank.AdminMock
-    |> expect(:withdraw, fn(100, "joe") -> {:ok} end)
+    expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:ok} end)
 
     conn = do_put("/accounts/joe/withdraw/100")
 
@@ -162,8 +153,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 403 when try to withdraw an amount greater than the current balance" do
-    Bank.AdminMock
-    |> expect(:withdraw, fn(100, "joe") -> {:error, :withdrawal_not_permitted} end)
+    expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:error, :withdrawal_not_permitted} end)
 
     conn = do_put("/accounts/joe/withdraw/100")
 
@@ -175,8 +165,7 @@ defmodule Http.RouterTest do
   end
 
   test "returns 404 when try to withdraw from a non existing account" do
-    Bank.AdminMock
-    |> expect(:withdraw, fn(100, "joe") -> {:error, :account_not_exists} end)
+    expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:error, :account_not_exists} end)
 
     conn = do_put("/accounts/joe/withdraw/100")
 
