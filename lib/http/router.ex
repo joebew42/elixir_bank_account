@@ -7,16 +7,24 @@ defmodule Http.Router do
   plug :dispatch
 
   get "/accounts/:account_name" do
-    case @accounts_administrator.check_balance(account_name) do
-      {:ok, balance} -> send_resp(conn, 200, Poison.encode!(%{"balance" => balance}))
-      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true ->
+        case @accounts_administrator.check_balance(account_name) do
+          {:ok, balance} -> send_resp(conn, 200, Poison.encode!(%{"balance" => balance}))
+          {:error, :account_not_exists} -> send_resp(conn, 404, "")
+        end
     end
   end
 
   post "/accounts/:account_name" do
-    case @accounts_administrator.create_account(account_name) do
-      {:ok, :account_created} -> send_resp(conn, 201, "/accounts/" <> account_name)
-      {:error, :account_already_exists} -> send_resp(conn, 200, "/accounts/" <> account_name)
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true ->
+        case @accounts_administrator.create_account(account_name) do
+          {:ok, :account_created} -> send_resp(conn, 201, "/accounts/" <> account_name)
+          {:error, :account_already_exists} -> send_resp(conn, 200, "/accounts/" <> account_name)
+        end
     end
   end
 
@@ -46,9 +54,13 @@ defmodule Http.Router do
   end
 
   delete "/accounts/:account_name" do
-    case @accounts_administrator.delete_account(account_name) do
-      {:ok, :account_deleted} -> send_resp(conn, 204, "")
-      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true ->
+        case @accounts_administrator.delete_account(account_name) do
+          {:ok, :account_deleted} -> send_resp(conn, 204, "")
+          {:error, :account_not_exists} -> send_resp(conn, 404, "")
+        end
     end
   end
 
@@ -63,6 +75,13 @@ defmodule Http.Router do
     case Integer.parse(amount) do
       {numeric_value, _} -> @accounts_administrator.withdraw(numeric_value, account_name)
       _ -> {:error, :bad_amount_value}
+    end
+  end
+
+  defp is_authenticated(%Plug.Conn{req_headers: headers}) do
+    case Enum.find(headers, fn({key, _}) -> key == "auth" end) do
+      nil -> false
+      _ -> true
     end
   end
 

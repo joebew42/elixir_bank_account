@@ -4,9 +4,18 @@ Remember this:
 
 # DOING
 
+* introduce an authorization mechanism to use the HTTP API (`deposit` and `withdraw`)
+ * how can we read HTTP headers with Plug?
+ * how can we add http headers when making test requests?
+
+ * what kind of authentication mechanism we can use?
+  * Basic HTTP authentication?
+ * Is there some existing Plug for handling HTTP authentication?
+
+
 # TODO
 
-* introduce somekind of authorization mechanism to use the HTTP API
+* introduce the use [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
 * as an `admin` I can transfer money from an existing account to another
 
 # NICE TO HAVE
