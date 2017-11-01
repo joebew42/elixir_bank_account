@@ -21,6 +21,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 201 == conn.status
     assert "/accounts/joe" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 200 when try to create an account that is already exists" do
@@ -32,6 +34,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 200 == conn.status
     assert "/accounts/joe" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 204 when an account is deleted" do
@@ -43,6 +47,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 204 == conn.status
     assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 404 when try to delete an unexisting account" do
@@ -54,6 +60,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 404 == conn.status
     assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 200 and the current balance" do
@@ -65,6 +73,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 200 == conn.status
     assert "{\"balance\":900}" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 404 when try to get the current balance of an unexisting account" do
@@ -76,6 +86,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 404 == conn.status
     assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 204 when deposit amount" do
@@ -87,6 +99,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 204 == conn.status
     assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 400 when try to deposit with no amount" do
@@ -114,6 +128,8 @@ defmodule Http.RouterTest do
     assert :sent == conn.state
     assert 404 == conn.status
     assert "" == conn.resp_body
+
+    verify! Bank.AdminMock
   end
 
   test "returns 204 when withdraw amount" do
