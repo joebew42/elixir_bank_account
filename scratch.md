@@ -5,9 +5,6 @@ Remember this:
 # DOING
 
 * introduce an authorization mechanism to use the HTTP API (`withdraw`)
- * how can we read HTTP headers with Plug?
- * how can we add http headers when making test requests?
-
  * what kind of authentication mechanism we can use?
   * Basic HTTP authentication?
  * Is there some existing Plug for handling HTTP authentication?

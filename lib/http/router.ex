@@ -48,15 +48,22 @@ defmodule Http.Router do
   end
 
   put "/accounts/:account_name/withdraw" do
-    send_resp(conn, 400, "you have to specify an amount")
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true -> send_resp(conn, 400, "you have to specify an amount")
+    end
   end
 
   put "/accounts/:account_name/withdraw/:amount" do
-    case withdraw(amount, account_name) do
-      {:ok} -> send_resp(conn, 204, "")
-      {:error, :account_not_exists} -> send_resp(conn, 404, "")
-      {:error, :withdrawal_not_permitted} -> send_resp(conn, 403, "the amount you specified is greater than your current balance")
-      {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true ->
+        case withdraw(amount, account_name) do
+          {:ok} -> send_resp(conn, 204, "")
+          {:error, :account_not_exists} -> send_resp(conn, 404, "")
+          {:error, :withdrawal_not_permitted} -> send_resp(conn, 403, "the amount you specified is greater than your current balance")
+          {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
+        end
     end
   end
 

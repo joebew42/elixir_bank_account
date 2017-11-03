@@ -37,8 +37,16 @@ defmodule Http.RouterTest do
       assert "" == conn.resp_body
     end
 
-    test "should receive a 401 when tries to deposit amount" do
+    test "should receive a 401 when tries to deposit an amount" do
       conn = do_put("/accounts/joe/deposit/100")
+
+      assert :sent == conn.state
+      assert 401 == conn.status
+      assert "" == conn.resp_body
+    end
+
+    test "should receive a 401 when tries to withdraw an amount" do
+      conn = do_put("/accounts/joe/withdraw/100")
 
       assert :sent == conn.state
       assert 401 == conn.status
@@ -162,7 +170,7 @@ defmodule Http.RouterTest do
     test "returns 204 when withdraw amount" do
       expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:ok} end)
 
-      conn = do_put("/accounts/joe/withdraw/100")
+      conn = do_authenticated_put("/accounts/joe/withdraw/100")
 
       assert :sent == conn.state
       assert 204 == conn.status
@@ -172,7 +180,7 @@ defmodule Http.RouterTest do
     end
 
     test "returns 400 when try to withdraw with no amount" do
-      conn = do_put("/accounts/joe/withdraw/")
+      conn = do_authenticated_put("/accounts/joe/withdraw/")
 
       assert :sent == conn.state
       assert 400 == conn.status
@@ -180,7 +188,7 @@ defmodule Http.RouterTest do
     end
 
     test "returns 400 when try to withdraw a non numeric value for amount" do
-      conn = do_put("/accounts/joe/withdraw/an-amount")
+      conn = do_authenticated_put("/accounts/joe/withdraw/an-amount")
 
       assert :sent == conn.state
       assert 400 == conn.status
@@ -190,7 +198,7 @@ defmodule Http.RouterTest do
     test "returns 403 when try to withdraw an amount greater than the current balance" do
       expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:error, :withdrawal_not_permitted} end)
 
-      conn = do_put("/accounts/joe/withdraw/100")
+      conn = do_authenticated_put("/accounts/joe/withdraw/100")
 
       assert :sent == conn.state
       assert 403 == conn.status
@@ -202,7 +210,7 @@ defmodule Http.RouterTest do
     test "returns 404 when try to withdraw from a non existing account" do
       expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:error, :account_not_exists} end)
 
-      conn = do_put("/accounts/joe/withdraw/100")
+      conn = do_authenticated_put("/accounts/joe/withdraw/100")
 
       assert :sent == conn.state
       assert 404 == conn.status
