@@ -29,14 +29,21 @@ defmodule Http.Router do
   end
 
   put "/accounts/:account_name/deposit" do
-    send_resp(conn, 400, "you have to specify an amount")
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true -> send_resp(conn, 400, "you have to specify an amount")
+    end
   end
 
   put "/accounts/:account_name/deposit/:amount" do
-    case deposit(amount, account_name) do
-      {:ok} -> send_resp(conn, 204, "")
-      {:error, :account_not_exists} -> send_resp(conn, 404, "")
-      {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
+    case is_authenticated(conn) do
+      false -> send_resp(conn, 401, "")
+      true ->
+        case deposit(amount, account_name) do
+          {:ok} -> send_resp(conn, 204, "")
+          {:error, :account_not_exists} -> send_resp(conn, 404, "")
+          {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
+        end
     end
   end
 

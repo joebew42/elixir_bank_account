@@ -4,7 +4,7 @@ Remember this:
 
 # DOING
 
-* introduce an authorization mechanism to use the HTTP API (`deposit` and `withdraw`)
+* introduce an authorization mechanism to use the HTTP API (`withdraw`)
  * how can we read HTTP headers with Plug?
  * how can we add http headers when making test requests?
 
@@ -15,7 +15,7 @@ Remember this:
 
 # TODO
 
-* introduce the use [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
+* introduce the use of [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
 * as an `admin` I can transfer money from an existing account to another
 
 # NICE TO HAVE

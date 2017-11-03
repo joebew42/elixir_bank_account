@@ -36,6 +36,14 @@ defmodule Http.RouterTest do
       assert 401 == conn.status
       assert "" == conn.resp_body
     end
+
+    test "should receive a 401 when tries to deposit amount" do
+      conn = do_put("/accounts/joe/deposit/100")
+
+      assert :sent == conn.state
+      assert 401 == conn.status
+      assert "" == conn.resp_body
+    end
   end
 
   describe "when user is authenticated" do
@@ -114,7 +122,7 @@ defmodule Http.RouterTest do
     test "returns 204 when deposit amount" do
       expect(Bank.AdminMock, :deposit, fn(100, "joe") -> {:ok} end)
 
-      conn = do_put("/accounts/joe/deposit/100")
+      conn = do_authenticated_put("/accounts/joe/deposit/100")
 
       assert :sent == conn.state
       assert 204 == conn.status
@@ -124,7 +132,7 @@ defmodule Http.RouterTest do
     end
 
     test "returns 400 when try to deposit with no amount" do
-      conn = do_put("/accounts/joe/deposit/")
+      conn = do_authenticated_put("/accounts/joe/deposit/")
 
       assert :sent == conn.state
       assert 400 == conn.status
@@ -132,7 +140,7 @@ defmodule Http.RouterTest do
     end
 
     test "returns 400 when try to deposit a non numeric value for amount" do
-      conn = do_put("/accounts/joe/deposit/an-amount")
+      conn = do_authenticated_put("/accounts/joe/deposit/an-amount")
 
       assert :sent == conn.state
       assert 400 == conn.status
@@ -142,7 +150,7 @@ defmodule Http.RouterTest do
     test "returns 404 when try to deposit to a non existing account" do
       expect(Bank.AdminMock, :deposit, fn(100, "joe") -> {:error, :account_not_exists} end)
 
-      conn = do_put("/accounts/joe/deposit/100")
+      conn = do_authenticated_put("/accounts/joe/deposit/100")
 
       assert :sent == conn.state
       assert 404 == conn.status
@@ -218,6 +226,10 @@ defmodule Http.RouterTest do
 
   defp do_post(endpoint, payload \\ "", headers \\ []) do
     do_request(:post, endpoint, payload, headers)
+  end
+
+  defp do_authenticated_put(endpoint) do
+    do_put(endpoint, "", [{"auth", "value"}])
   end
 
   defp do_put(endpoint, payload \\ "", headers \\ []) do
