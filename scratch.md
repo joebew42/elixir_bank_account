@@ -5,6 +5,7 @@ Remember this:
 # DOING
 
 * introduce an authorization mechanism to use the HTTP API
+ * complete the use of the `AuthorizationService`
  * what kind of authentication mechanism can we use?
   * Basic HTTP authentication? Yes!
  * Is there some existing Plug for handling HTTP authentication?

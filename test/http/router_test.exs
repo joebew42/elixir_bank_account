@@ -54,7 +54,27 @@ defmodule Http.RouterTest do
     end
   end
 
-  describe "when user is authenticated" do
+  describe "when user is not authorized" do
+    test "should receive a 403 when tries to create a new account" do
+      expect(Http.AuthorizationServiceMock, :authorized?, fn("badjoe") -> false end)
+
+      conn = do_unauthorized_post("/accounts/joe", "badjoe")
+
+      assert :sent == conn.state
+      assert 403 == conn.status
+      assert "you are not authorized to access this resource" == conn.resp_body
+
+      verify! Http.AuthorizationServiceMock
+    end
+  end
+
+  describe "when user is authorized" do
+
+    setup do
+      expect(Http.AuthorizationServiceMock, :authorized?, fn(_) -> true end)
+      :ok
+    end
+
     test "returns 201 when a new account is created" do
       expect(Bank.AdminMock, :create_account, fn("joe") -> {:ok, :account_created} end)
 
@@ -230,6 +250,10 @@ defmodule Http.RouterTest do
 
   defp do_authenticated_post(endpoint) do
     do_post(endpoint, "", [{"auth", "value"}])
+  end
+
+  defp do_unauthorized_post(endpoint, credentials) do
+    do_post(endpoint, "", [{"auth", credentials}])
   end
 
   defp do_post(endpoint, payload \\ "", headers \\ []) do
