@@ -4,11 +4,10 @@ Remember this:
 
 # DOING
 
-* introduce an authorization mechanism to use the HTTP API (`withdraw`)
- * what kind of authentication mechanism we can use?
-  * Basic HTTP authentication?
+* introduce an authorization mechanism to use the HTTP API
+ * what kind of authentication mechanism can we use?
+  * Basic HTTP authentication? Yes!
  * Is there some existing Plug for handling HTTP authentication?
-
 
 # TODO
 

@@ -4,77 +4,52 @@ defmodule Http.Router do
   @accounts_administrator Application.get_env(:bank, :accounts_administrator)
 
   plug :match
+  plug Plug.CheckAuthentication
   plug :dispatch
 
   get "/accounts/:account_name" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true ->
-        case @accounts_administrator.check_balance(account_name) do
-          {:ok, balance} -> send_resp(conn, 200, Poison.encode!(%{"balance" => balance}))
-          {:error, :account_not_exists} -> send_resp(conn, 404, "")
-        end
+    case @accounts_administrator.check_balance(account_name) do
+      {:ok, balance} -> send_resp(conn, 200, Poison.encode!(%{"balance" => balance}))
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
     end
   end
 
   post "/accounts/:account_name" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true ->
-        case @accounts_administrator.create_account(account_name) do
-          {:ok, :account_created} -> send_resp(conn, 201, "/accounts/" <> account_name)
-          {:error, :account_already_exists} -> send_resp(conn, 200, "/accounts/" <> account_name)
-        end
+    case @accounts_administrator.create_account(account_name) do
+      {:ok, :account_created} -> send_resp(conn, 201, "/accounts/" <> account_name)
+      {:error, :account_already_exists} -> send_resp(conn, 200, "/accounts/" <> account_name)
     end
   end
 
   put "/accounts/:account_name/deposit" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true -> send_resp(conn, 400, "you have to specify an amount")
-    end
+    send_resp(conn, 400, "you have to specify an amount")
   end
 
   put "/accounts/:account_name/deposit/:amount" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true ->
-        case deposit(amount, account_name) do
-          {:ok} -> send_resp(conn, 204, "")
-          {:error, :account_not_exists} -> send_resp(conn, 404, "")
-          {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
-        end
+    case deposit(amount, account_name) do
+      {:ok} -> send_resp(conn, 204, "")
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+      {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
     end
   end
 
   put "/accounts/:account_name/withdraw" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true -> send_resp(conn, 400, "you have to specify an amount")
-    end
+    send_resp(conn, 400, "you have to specify an amount")
   end
 
   put "/accounts/:account_name/withdraw/:amount" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true ->
-        case withdraw(amount, account_name) do
-          {:ok} -> send_resp(conn, 204, "")
-          {:error, :account_not_exists} -> send_resp(conn, 404, "")
-          {:error, :withdrawal_not_permitted} -> send_resp(conn, 403, "the amount you specified is greater than your current balance")
-          {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
-        end
+    case withdraw(amount, account_name) do
+      {:ok} -> send_resp(conn, 204, "")
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
+      {:error, :withdrawal_not_permitted} -> send_resp(conn, 403, "the amount you specified is greater than your current balance")
+      {:error, :bad_amount_value} -> send_resp(conn, 400, "you have to specify a numeric amount")
     end
   end
 
   delete "/accounts/:account_name" do
-    case is_authenticated(conn) do
-      false -> send_resp(conn, 401, "")
-      true ->
-        case @accounts_administrator.delete_account(account_name) do
-          {:ok, :account_deleted} -> send_resp(conn, 204, "")
-          {:error, :account_not_exists} -> send_resp(conn, 404, "")
-        end
+    case @accounts_administrator.delete_account(account_name) do
+      {:ok, :account_deleted} -> send_resp(conn, 204, "")
+      {:error, :account_not_exists} -> send_resp(conn, 404, "")
     end
   end
 
@@ -89,13 +64,6 @@ defmodule Http.Router do
     case Integer.parse(amount) do
       {numeric_value, _} -> @accounts_administrator.withdraw(numeric_value, account_name)
       _ -> {:error, :bad_amount_value}
-    end
-  end
-
-  defp is_authenticated(%Plug.Conn{req_headers: headers}) do
-    case Enum.find(headers, fn({key, _}) -> key == "auth" end) do
-      nil -> false
-      _ -> true
     end
   end
 
