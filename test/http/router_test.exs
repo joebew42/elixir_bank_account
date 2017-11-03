@@ -232,7 +232,7 @@ defmodule Http.RouterTest do
     do_request(:delete, endpoint, headers)
   end
 
-  defp do_request(verb, endpoint, headers \\ []) do
+  defp do_request(verb, endpoint, headers) do
     do_request(verb, endpoint, "", headers)
   end
 
