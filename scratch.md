@@ -5,6 +5,7 @@ Remember this:
 # DOING
 
 * introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
+ * try to extract a macro for the forbidden 403 http requests
 
 # TODO
 

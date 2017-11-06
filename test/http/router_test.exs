@@ -3,6 +3,7 @@ defmodule Http.RouterTest do
   use Plug.Test
 
   import Mox
+  import Support.Macros
 
   @router Http.Router
   @opts @router.init([])
@@ -13,45 +14,11 @@ defmodule Http.RouterTest do
   end
 
   describe "when user is not authenticated" do
-    test "should receive a 401 when tries to create a new account" do
-      conn = do_post("/accounts/joe")
-
-      assert :sent == conn.state
-      assert 401 == conn.status
-      assert "" == conn.resp_body
-    end
-
-    test "should receive a 401 when tries to delete an account" do
-      conn = do_delete("/accounts/joe")
-
-      assert :sent == conn.state
-      assert 401 == conn.status
-      assert "" == conn.resp_body
-    end
-
-    test "should receive a 401 when tries to check the current balance" do
-      conn = do_get("/accounts/joe")
-
-      assert :sent == conn.state
-      assert 401 == conn.status
-      assert "" == conn.resp_body
-    end
-
-    test "should receive a 401 when tries to deposit an amount" do
-      conn = do_put("/accounts/joe/deposit/100")
-
-      assert :sent == conn.state
-      assert 401 == conn.status
-      assert "" == conn.resp_body
-    end
-
-    test "should receive a 401 when tries to withdraw an amount" do
-      conn = do_put("/accounts/joe/withdraw/100")
-
-      assert :sent == conn.state
-      assert 401 == conn.status
-      assert "" == conn.resp_body
-    end
+    it_should_receive_an_unauthorized_on(:post, "/accounts/joe")
+    it_should_receive_an_unauthorized_on(:delete, "/accounts/joe")
+    it_should_receive_an_unauthorized_on(:get, "/accounts/joe")
+    it_should_receive_an_unauthorized_on(:put, "/accounts/joe/deposit/100")
+    it_should_receive_an_unauthorized_on(:put, "/accounts/joe/withdraw/100")
   end
 
   describe "when user is not authorized" do
@@ -288,7 +255,7 @@ defmodule Http.RouterTest do
     do_get(endpoint, [{"auth", "value"}])
   end
 
-  defp do_get(endpoint, headers \\ []) do
+  defp do_get(endpoint, headers) do
     do_request(:get, endpoint, headers)
   end
 
@@ -296,7 +263,7 @@ defmodule Http.RouterTest do
     do_post(endpoint, "", [{"auth", "value"}])
   end
 
-  defp do_post(endpoint, payload \\ "", headers \\ []) do
+  defp do_post(endpoint, payload, headers) do
     do_request(:post, endpoint, payload, headers)
   end
 
@@ -304,7 +271,7 @@ defmodule Http.RouterTest do
     do_put(endpoint, "", [{"auth", "value"}])
   end
 
-  defp do_put(endpoint, payload \\ "", headers \\ []) do
+  defp do_put(endpoint, payload, headers) do
     do_request(:put, endpoint, payload, headers)
   end
 
@@ -312,7 +279,7 @@ defmodule Http.RouterTest do
     do_delete(endpoint, [{"auth", "value"}])
   end
 
-  defp do_delete(endpoint, headers \\ []) do
+  defp do_delete(endpoint, headers) do
     do_request(:delete, endpoint, headers)
   end
 
