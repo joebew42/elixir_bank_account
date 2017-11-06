@@ -4,15 +4,10 @@ Remember this:
 
 # DOING
 
-* introduce an authorization mechanism to authorize the HTTP requests
- * complete the use of the `AuthorizationService`
- * what kind of authentication mechanism can we use?
-  * Basic HTTP authentication? Yes!
- * Is there some existing Plug for handling HTTP authentication?
+* introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
 
 # TODO
 
-* introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
 * as an `admin` I can transfer money from an existing account to another
 
 # NICE TO HAVE
@@ -22,6 +17,7 @@ Remember this:
 
 # DONE
 
+* introduce an authorization mechanism to authorize the HTTP requests
 * do not use the pipe operator for `Bank.AdminMock` in the tests
 * add the `verify!` to all the tests that use the `Bank.AdminMock`
 * expose the `withdraw` through an HTTP API
