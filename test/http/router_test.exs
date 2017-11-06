@@ -55,10 +55,54 @@ defmodule Http.RouterTest do
   end
 
   describe "when user is not authorized" do
-    test "should receive a 403 when tries to create a new account" do
-      expect(Http.AuthorizationServiceMock, :authorized?, fn("badjoe") -> false end)
 
-      conn = do_unauthorized_post("/accounts/joe", "badjoe")
+    setup do
+      expect(Http.AuthorizationServiceMock, :authorized?, fn(_) -> false end)
+      :ok
+    end
+
+    test "should receive a 403 when tries to create a new account" do
+      conn = do_authenticated_post("/accounts/joe")
+
+      assert :sent == conn.state
+      assert 403 == conn.status
+      assert "you are not authorized to access this resource" == conn.resp_body
+
+      verify! Http.AuthorizationServiceMock
+    end
+
+    test "should receive a 403 when tries to delete an account" do
+      conn = do_authenticated_delete("/accounts/joe")
+
+      assert :sent == conn.state
+      assert 403 == conn.status
+      assert "you are not authorized to access this resource" == conn.resp_body
+
+      verify! Http.AuthorizationServiceMock
+    end
+
+    test "should receive a 403 when tries to check the current balance" do
+      conn = do_authenticated_get("/accounts/joe")
+
+      assert :sent == conn.state
+      assert 403 == conn.status
+      assert "you are not authorized to access this resource" == conn.resp_body
+
+      verify! Http.AuthorizationServiceMock
+    end
+
+    test "should receive a 403 when tries to deposit an amount" do
+      conn = do_authenticated_put("/accounts/joe/deposit/100")
+
+      assert :sent == conn.state
+      assert 403 == conn.status
+      assert "you are not authorized to access this resource" == conn.resp_body
+
+      verify! Http.AuthorizationServiceMock
+    end
+
+    test "should receive a 403 when tries to withdraw an amount" do
+      conn = do_authenticated_put("/accounts/joe/withdraw/100")
 
       assert :sent == conn.state
       assert 403 == conn.status
@@ -250,10 +294,6 @@ defmodule Http.RouterTest do
 
   defp do_authenticated_post(endpoint) do
     do_post(endpoint, "", [{"auth", "value"}])
-  end
-
-  defp do_unauthorized_post(endpoint, credentials) do
-    do_post(endpoint, "", [{"auth", credentials}])
   end
 
   defp do_post(endpoint, payload \\ "", headers \\ []) do

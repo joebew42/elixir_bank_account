@@ -6,7 +6,6 @@ Remember this:
 
 * introduce an authorization mechanism to authorize the HTTP requests
  * complete the use of the `AuthorizationService`
-  * See the `do_unauthorized_post` and its argument `badjoe` (we are reveal the intent twice, with the name of function and with the parameter itself). Maybe a `do_authenticated_post` with `badjoe` should be better.
  * what kind of authentication mechanism can we use?
   * Basic HTTP authentication? Yes!
  * Is there some existing Plug for handling HTTP authentication?
