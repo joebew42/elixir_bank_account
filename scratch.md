@@ -4,7 +4,7 @@ Remember this:
 
 # DOING
 
-* introduce an authorization mechanism to use the HTTP API
+* introduce an authorization mechanism to authorize the HTTP requests
  * complete the use of the `AuthorizationService`
   * See the `do_unauthorized_post` and its argument `badjoe` (we are reveal the intent twice, with the name of function and with the parameter itself). Maybe a `do_authenticated_post` with `badjoe` should be better.
  * what kind of authentication mechanism can we use?
@@ -13,7 +13,7 @@ Remember this:
 
 # TODO
 
-* introduce the use of [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
+* introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
 * as an `admin` I can transfer money from an existing account to another
 
 # NICE TO HAVE
