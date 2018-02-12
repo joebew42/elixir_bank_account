@@ -4,11 +4,10 @@ Remember this:
 
 # DOING
 
-* introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
- * try to extract a macro for the forbidden 403 http requests
-
 # TODO
 
+* expose a graphql API to create an account
+* use the existing authorization mechanism to authorize the graphql API
 * as an `admin` I can transfer money from an existing account to another
 
 # NICE TO HAVE
@@ -18,6 +17,8 @@ Remember this:
 
 # DONE
 
+* introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
+  * try to extract a macro for the forbidden 403 http requests
 * introduce an authorization mechanism to authorize the HTTP requests
 * do not use the pipe operator for `Bank.AdminMock` in the tests
 * add the `verify!` to all the tests that use the `Bank.AdminMock`
