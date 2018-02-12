@@ -4,10 +4,15 @@ Remember this:
 
 # DOING
 
+* expose a graphql API to create a bank account
+  * use mock to test the collaboration between graphQL api and `accounts_administrator`
+
 # TODO
 
-* expose a graphql API to create an account
+* disable DEBUG information
 * use the existing authorization mechanism to authorize the graphql API
+* replace the tests for the 403 with a single test
+* move the module `Http.Router` to `Http.Rest.Router`
 * as an `admin` I can transfer money from an existing account to another
 
 # NICE TO HAVE

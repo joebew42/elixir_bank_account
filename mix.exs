@@ -30,6 +30,7 @@ defmodule Bank.Mixfile do
       {:cowboy, "~> 1.0.0"},
       {:plug, "~> 1.0"},
       {:poison, "~> 3.1"},
+      {:absinthe_plug, "~> 1.4"},
       {:mox, "~> 0.2.0", only: :test}
     ]
   end
