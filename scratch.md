@@ -4,9 +4,6 @@ Remember this:
 
 # DOING
 
-* expose a graphql API to create a bank account
-  * use mock to test the collaboration between graphQL api and `accounts_administrator`
-
 # TODO
 
 * disable DEBUG information
@@ -14,6 +11,7 @@ Remember this:
 * replace the tests for the 403 with a single test
 * move the module `Http.Router` to `Http.Rest.Router`
 * as an `admin` I can transfer money from an existing account to another
+* document how to play with the restful api
 
 # NICE TO HAVE
 
@@ -22,6 +20,8 @@ Remember this:
 
 # DONE
 
+* expose a graphql API to create a bank account
+  * use mock to test the collaboration between graphQL api and `Bank.AdminMock`
 * introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
   * try to extract a macro for the forbidden 403 http requests
 * introduce an authorization mechanism to authorize the HTTP requests
