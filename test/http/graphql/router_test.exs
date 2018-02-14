@@ -46,6 +46,40 @@ defmodule Http.GraphQL.RouterTest do
     verify! Bank.AdminMock
   end
 
+  test "returns the name when an account is deleted" do
+    expect(Bank.AdminMock, :delete_account, fn("joe") -> {:ok, :account_deleted} end)
+
+    query = """
+      mutation DeleteAccount {
+        deleteAccount(name: "joe") {
+          name
+        }
+      }
+      """
+
+    result = do_graphql_mutation("/", query, "DeleteAccount", "deleteAccount")
+
+    assert result == %{"name" => "joe"}
+    verify! Bank.AdminMock
+  end
+
+  test "returns an error message when try to delete an unexisting account" do
+    expect(Bank.AdminMock, :delete_account, fn("joe") -> {:error, :account_not_exists} end)
+
+    query = """
+      mutation DeleteAccount {
+        deleteAccount(name: "joe") {
+          name
+        }
+      }
+      """
+
+    errors = do_graphql_mutation("/", query, "DeleteAccount", "deleteAccount")
+
+    assert contains?(errors, "The account joe is not existing")
+    verify! Bank.AdminMock
+  end
+
   defp contains?(enumerable, element), do: Enum.member?(enumerable, element)
 
   defp do_graphql_mutation(endpoint, query, operation_name, query_name) do

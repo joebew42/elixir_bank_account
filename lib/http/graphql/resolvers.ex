@@ -8,4 +8,11 @@ defmodule Http.GraphQL.Resolvers do
       _ -> {:ok, %{"name": name}}
     end
   end
+
+  def delete_account(_parent, %{name: name}, _resolution) do
+    case @accounts_administrator.delete_account(name) do
+      {:error, :account_not_exists} -> {:error, "The account " <> name <> " is not existing"}
+      _ -> {:ok, %{"name": name}}
+    end
+  end
 end

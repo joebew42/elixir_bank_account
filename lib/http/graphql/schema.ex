@@ -14,5 +14,12 @@ defmodule Http.GraphQL.Schema do
 
       resolve &Resolvers.create_account/3
     end
+
+    @desc "Delete Account"
+    field :delete_account, type: :account do
+      arg :name, non_null(:string)
+
+      resolve &Resolvers.delete_account/3
+    end
   end
 end

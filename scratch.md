@@ -20,6 +20,7 @@ Remember this:
 
 # DONE
 
+* graphQL API: expose the delete account feature
 * graphQL API: handle the case where account already exists when we try to create it
 * disable DEBUG information
 * expose a graphql API to create a bank account
