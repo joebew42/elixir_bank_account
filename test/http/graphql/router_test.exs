@@ -29,6 +29,25 @@ defmodule Http.GraphQL.RouterTest do
     verify! Bank.AdminMock
   end
 
+  test "returns an error message when try to create an account that is already exists" do
+    expect(Bank.AdminMock, :create_account, fn("joe") -> {:error, :account_already_exists} end)
+
+    query = """
+      mutation CreateAccount {
+        createAccount(name: "joe") {
+          name
+        }
+      }
+      """
+
+    errors = do_graphql_mutation("/", query, "CreateAccount", "createAccount")
+
+    assert contains?(errors, "The account joe is already existing")
+    verify! Bank.AdminMock
+  end
+
+  defp contains?(enumerable, element), do: Enum.member?(enumerable, element)
+
   defp do_graphql_mutation(endpoint, query, operation_name, query_name) do
     conn(:post, endpoint, graphql_mutation_payload(query, operation_name))
     |> do_graphql_request(query_name)
