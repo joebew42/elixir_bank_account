@@ -6,7 +6,6 @@ Remember this:
 
 # TODO
 
-* disable DEBUG information
 * use the existing authorization mechanism to authorize the graphql API
 * replace the tests for the 403 with a single test
 * move the module `Http.Router` to `Http.Rest.Router`
@@ -20,6 +19,7 @@ Remember this:
 
 # DONE
 
+* disable DEBUG information
 * expose a graphql API to create a bank account
   * use mock to test the collaboration between graphQL api and `Bank.AdminMock`
 * introduce [Macros](http://hugoribeira.com/DRYing-Elixir-Tests-With-Macros/) to automatically generate tests for the user not authenticated scenario
