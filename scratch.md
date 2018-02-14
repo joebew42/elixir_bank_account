@@ -6,6 +6,7 @@ Remember this:
 
 # TODO
 
+* graphQL API: expose the deposit feature
 * move all test helpers in `test_helpers.exs` ??
 * use the existing authorization mechanism to authorize the graphql API
 * replace the tests for the 403 with a single test
@@ -20,6 +21,7 @@ Remember this:
 
 # DONE
 
+* graphQL API: expose the check_balance feature
 * graphQL API: expose the delete account feature
 * graphQL API: handle the case where account already exists when we try to create it
 * disable DEBUG information

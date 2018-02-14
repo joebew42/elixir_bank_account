@@ -80,7 +80,46 @@ defmodule Http.GraphQL.RouterTest do
     verify! Bank.AdminMock
   end
 
+  test "returns the current balance of an existing account" do
+    expect(Bank.AdminMock, :check_balance, fn("joe") -> {:ok, 900} end)
+
+    query = """
+      {
+        account(name: "joe") {
+          balance
+        }
+      }
+      """
+
+    result = do_graphql_query("/", query, "account")
+
+    assert result == %{"balance" => 900}
+    verify! Bank.AdminMock
+  end
+
+  test "returns an error message when try to get the current balance of an unexisting account" do
+    expect(Bank.AdminMock, :check_balance, fn("joe") -> {:error, :account_not_exists} end)
+
+    query = """
+      {
+        account(name: "joe") {
+          balance
+        }
+      }
+      """
+
+    errors = do_graphql_query("/", query, "account")
+
+    assert contains?(errors, "The account joe is not existing")
+    verify! Bank.AdminMock
+  end
+
   defp contains?(enumerable, element), do: Enum.member?(enumerable, element)
+
+  defp do_graphql_query(endpoint, query, query_name) do
+    conn(:post, endpoint, graphql_query_payload(query, query_name))
+    |> do_graphql_request(query_name)
+  end
 
   defp do_graphql_mutation(endpoint, query, operation_name, query_name) do
     conn(:post, endpoint, graphql_mutation_payload(query, operation_name))
@@ -91,6 +130,14 @@ defmodule Http.GraphQL.RouterTest do
     conn
     |> @router.call(@opts)
     |> graphql_body_for(query_name)
+  end
+
+  defp graphql_query_payload(query, name) do
+    %{
+      "operationName" => "#{name}",
+      "query" => "query #{name} #{query}",
+      "variables" => "{}"
+    }
   end
 
   defp graphql_mutation_payload(query, operation_name) do

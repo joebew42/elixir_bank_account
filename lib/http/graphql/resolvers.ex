@@ -15,4 +15,11 @@ defmodule Http.GraphQL.Resolvers do
       _ -> {:ok, %{"name": name}}
     end
   end
+
+  def find_account(_parent, %{name: name}, _resolution) do
+    case @accounts_administrator.check_balance(name) do
+      {:ok, balance} -> {:ok, %{"balance": balance}}
+      _ -> {:error, "The account " <> name <> " is not existing"}
+    end
+  end
 end

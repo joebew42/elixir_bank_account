@@ -5,6 +5,12 @@ defmodule Http.GraphQL.Schema do
   alias Http.GraphQL.Resolvers
 
   query do
+    @desc "Get an account"
+    field :account, :account do
+      arg :name, non_null(:string)
+
+      resolve &Resolvers.find_account/3
+    end
   end
 
   mutation do

@@ -3,5 +3,6 @@ defmodule Http.GraphQL.Types do
 
   object :account do
     field :name, :string
+    field :balance, :integer
   end
 end
