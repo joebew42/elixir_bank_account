@@ -6,6 +6,7 @@ Remember this:
 
 # TODO
 
+* find a way to expose the two APIs (restful and the graphql) by using only one server
 * move all test helpers in `test_helpers.exs` ??
 * use the existing authorization mechanism to authorize the graphql API
 * move the module `Http.Router` to `Http.Rest.Router`

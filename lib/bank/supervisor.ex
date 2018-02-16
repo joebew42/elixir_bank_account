@@ -10,7 +10,8 @@ defmodule Bank.Supervisor do
       Bank.Admin,
       Bank.AccountSupervisor,
       Bank.AccountRegistry,
-      Plug.Adapters.Cowboy.child_spec(:http, Http.Router, [], [port: 4000])
+      Plug.Adapters.Cowboy.child_spec(:http, Http.Router, [], [port: 4000]),
+      Plug.Adapters.Cowboy.child_spec(:http, Http.GraphQL.Router, [], [port: 5000])
     ]
 
     Supervisor.init(children, strategy: :one_for_one)
