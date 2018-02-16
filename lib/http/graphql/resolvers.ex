@@ -31,6 +31,17 @@ defmodule Http.GraphQL.Resolvers do
       _ ->
         {:error, "The account " <> name <> " is not existing"}
     end
+  end
 
+  def withdraw_amount(_parent, %{name: name, amount: amount}, _resolution) do
+    case @accounts_administrator.withdraw(amount, name) do
+      {:ok} ->
+        {:ok, balance} = @accounts_administrator.check_balance(name)
+        {:ok, %{"balance": balance}}
+      {:error, :withdrawal_not_permitted} ->
+        {:error, "The amount you specified is greater than your current balance"}
+      _ ->
+        {:error, "The account " <> name <> " is not existing"}
+    end
   end
 end

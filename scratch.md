@@ -4,12 +4,10 @@ Remember this:
 
 # DOING
 
-
 # TODO
 
-* graphQL API: expose the withdraw feature
 * move all test helpers in `test_helpers.exs` ??
-* use the existing authorization mechanism to authorize the graphql AP
+* use the existing authorization mechanism to authorize the graphql API
 * move the module `Http.Router` to `Http.Rest.Router`
 * replace the tests for the 403 with a single test for the restful api
 * as an `admin` I can transfer money from an existing account to another
@@ -22,6 +20,7 @@ Remember this:
 
 # DONE
 
+* graphQL API: expose the withdraw feature
 * graphQL API: expose the deposit feature
 * graphQL API: expose the check_balance feature
 * graphQL API: expose the delete account feature

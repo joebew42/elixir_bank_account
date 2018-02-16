@@ -35,5 +35,13 @@ defmodule Http.GraphQL.Schema do
 
       resolve &Resolvers.deposit_amount/3
     end
+
+    @desc "Withdraw an amount"
+    field :withdraw, type: :account do
+      arg :name, non_null(:string)
+      arg :amount, non_null(:integer)
+
+      resolve &Resolvers.withdraw_amount/3
+    end
   end
 end

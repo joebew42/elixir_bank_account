@@ -150,6 +150,59 @@ defmodule Http.GraphQL.RouterTest do
     verify! Bank.AdminMock
   end
 
+  test "returns the updated balance when withdraw amount" do
+    Bank.AdminMock
+    |> expect(:withdraw, fn(100, "joe") -> {:ok} end)
+    |> expect(:check_balance, fn("joe") -> {:ok, 0} end)
+
+    query = """
+      mutation Withdraw {
+        withdraw(name: "joe", amount: 100) {
+          balance
+        }
+      }
+      """
+
+    result = do_graphql_mutation("/", query, "Withdraw", "withdraw")
+
+    assert result == %{"balance" => 0}
+    verify! Bank.AdminMock
+  end
+
+  test "returns error message when try to withdraw an amount greater than the current balance" do
+    expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:error, :withdrawal_not_permitted} end)
+
+    query = """
+      mutation Withdraw {
+        withdraw(name: "joe", amount: 100) {
+          balance
+        }
+      }
+      """
+
+    errors = do_graphql_mutation("/", query, "Withdraw", "withdraw")
+
+    assert contains?(errors, "The amount you specified is greater than your current balance")
+    verify! Bank.AdminMock
+  end
+
+  test "returns an error message when try to withdraw from a non existing account" do
+    expect(Bank.AdminMock, :withdraw, fn(100, "joe") -> {:error, :account_not_exists} end)
+
+    query = """
+      mutation Withdraw {
+        withdraw(name: "joe", amount: 100) {
+          balance
+        }
+      }
+      """
+
+    errors = do_graphql_mutation("/", query, "Withdraw", "withdraw")
+
+    assert contains?(errors, "The account joe is not existing")
+    verify! Bank.AdminMock
+  end
+
   defp contains?(enumerable, element), do: Enum.member?(enumerable, element)
 
   defp do_graphql_query(endpoint, query, query_name) do
