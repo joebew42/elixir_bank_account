@@ -114,6 +114,42 @@ defmodule Http.GraphQL.RouterTest do
     verify! Bank.AdminMock
   end
 
+  test "returns the updated balance when deposit amount" do
+    Bank.AdminMock
+    |> expect(:deposit, fn(100, "joe") -> {:ok} end)
+    |> expect(:check_balance, fn("joe") -> {:ok, 200} end)
+
+    query = """
+      mutation Deposit {
+        deposit(name: "joe", amount: 100) {
+          balance
+        }
+      }
+      """
+
+    result = do_graphql_mutation("/", query, "Deposit", "deposit")
+
+    assert result == %{"balance" => 200}
+    verify! Bank.AdminMock
+  end
+
+  test "returns an error message when try to deposit to a non existing account" do
+    expect(Bank.AdminMock, :deposit, fn(100, "joe") -> {:error, :account_not_exists} end)
+
+    query = """
+      mutation Deposit {
+        deposit(name: "joe", amount: 100) {
+          balance
+        }
+      }
+      """
+
+    errors = do_graphql_mutation("/", query, "Deposit", "deposit")
+
+    assert contains?(errors, "The account joe is not existing")
+    verify! Bank.AdminMock
+  end
+
   defp contains?(enumerable, element), do: Enum.member?(enumerable, element)
 
   defp do_graphql_query(endpoint, query, query_name) do

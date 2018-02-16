@@ -22,4 +22,15 @@ defmodule Http.GraphQL.Resolvers do
       _ -> {:error, "The account " <> name <> " is not existing"}
     end
   end
+
+  def deposit_amount(_parent, %{name: name, amount: amount}, _resolution) do
+    case @accounts_administrator.deposit(amount, name) do
+      {:ok} ->
+        {:ok, balance} = @accounts_administrator.check_balance(name)
+        {:ok, %{"balance": balance}}
+      _ ->
+        {:error, "The account " <> name <> " is not existing"}
+    end
+
+  end
 end
