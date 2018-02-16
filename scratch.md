@@ -12,7 +12,6 @@ Remember this:
 * move the module `Http.Router` to `Http.Rest.Router`
 * replace the tests for the 403 with a single test for the restful api
 * as an `admin` I can transfer money from an existing account to another
-* document in the `readme` how to play with the existing restful api
 
 # NICE TO HAVE
 
@@ -21,6 +20,7 @@ Remember this:
 
 # DONE
 
+* document in the `readme` how to play with the existing restful api and graphql
 * graphQL API: expose the withdraw feature
 * graphQL API: expose the deposit feature
 * graphQL API: expose the check_balance feature
